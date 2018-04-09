@@ -75,12 +75,14 @@ public void unregisterNetConnChangedReceiver(View view) {
 ```java
 public void addNetConnChangedListener(View view) {
       NetUtil.addNetConnChangedListener((connectStatus) -> Log.e("##", "connectStatus: " + connectStatus));
+}
 ```
 
 ##### 12、移除网络变化监听
 ```java
 public void removeNetConnChangedListener(View view) {
       NetUtil.removeNetConnChangedListener(listener));
+}
 ```
 
 
