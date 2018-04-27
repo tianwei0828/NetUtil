@@ -18,21 +18,21 @@ public void isMobileConnected(View view) {
 ##### 3、判断是否移动2G网络连接
 ```java
 public void is2GConnected(View view) {
-     boolean mobileConnected = NetUtil.is2GConnected(this);
+     boolean 2GConnecte = NetUtil.is2GConnected(this);
 }
 ```
 
 ##### 4、判断是否移动3G网络连接
 ```java
 public void is3GConnected(View view) {
-     boolean mobileConnected = NetUtil.is3GConnected(this);
+     boolean 3GConnecte = NetUtil.is3GConnected(this);
 }
 ```
 
 ##### 5、判断是否移动4G网络连接
 ```java
 public void is4GConnected(View view) {
-     boolean mobileConnected = NetUtil.is4GConnected(this);
+     boolean 4GConnecte = NetUtil.is4GConnected(this);
 }
 ```
 
@@ -46,14 +46,14 @@ public void getNetworkOperatorName(View view) {
 ##### 7、获取移动终端类型
 ```java
 public void getPhoneType(View view) {
-     String getNetworkOperatorName = NetUtil.getPhoneType(this);
+     String phoneType = NetUtil.getPhoneType(this);
 }
 ```
 
 ##### 8、判断是否Wifi连接
 ```java
 public void isWifiConnected(View view) {
-     String getNetworkOperatorName = NetUtil.isWifiConnected(this);
+     boolean wifiConnected = NetUtil.isWifiConnected(this);
 }
 ```
 
