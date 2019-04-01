@@ -30,6 +30,18 @@ class NetUtil private constructor() {
             fun onNetConnChanged(connectStatus: ConnectStatus)
         }
 
+        enum class ConnectStatus {
+            NO_NETWORK,
+            WIFI,
+            MOBILE,
+            MOBILE_2G,
+            MOBILE_3G,
+            MOBILE_4G,
+            MOBILE_UNKNOWN,
+            OTHER,
+            NO_CONNECTED
+        }
+
         /**
          * 网络接口是否可用（即网络连接是否可行）和/或连接（即是否存在网络连接，是否可以建立套接字并传递数据）
          *
@@ -258,18 +270,6 @@ class NetUtil private constructor() {
             if (D) {
                 Log.e(TAG, msg)
             }
-        }
-
-        enum class ConnectStatus {
-            NO_NETWORK,
-            WIFI,
-            MOBILE,
-            MOBILE_2G,
-            MOBILE_3G,
-            MOBILE_4G,
-            MOBILE_UNKNOWN,
-            OTHER,
-            NO_CONNECTED
         }
     }
 }
