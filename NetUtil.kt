@@ -1,4 +1,4 @@
-package com.tw.sysnetdemo;
+package com.tw.utils
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.telephony.TelephonyManager
 import android.util.Log
+import com.ids.base.utils.BuildConfig
 
 /**
  * 网络工具类
@@ -20,10 +21,14 @@ import android.util.Log
 class NetUtil private constructor() {
 
     companion object {
-        private val TAG = "NetUtil"
+        private const val TAG = "NetUtil"
         private val D = BuildConfig.DEBUG
         private val sNetConnChangedReceiver = NetConnChangedReceiver()
         private val sNetConnChangedListeners = ArrayList<NetConnChangedListener>()
+
+        interface NetConnChangedListener {
+            fun onNetConnChanged(connectStatus: ConnectStatus)
+        }
 
         /**
          * 网络接口是否可用（即网络连接是否可行）和/或连接（即是否存在网络连接，是否可以建立套接字并传递数据）
@@ -253,10 +258,6 @@ class NetUtil private constructor() {
             if (D) {
                 Log.e(TAG, msg)
             }
-        }
-
-        interface NetConnChangedListener {
-            fun onNetConnChanged(connectStatus: ConnectStatus)
         }
 
         enum class ConnectStatus {
