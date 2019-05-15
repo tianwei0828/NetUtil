@@ -19,7 +19,6 @@ import com.ids.base.utils.BuildConfig
  * NetworkInfo: Describes the status of a network interface of a given type (currently either Mobile or Wi-Fi).
  */
 class NetUtil private constructor() {
-
     companion object {
         private const val TAG = "NetUtil"
         private val D = BuildConfig.DEBUG
@@ -50,7 +49,7 @@ class NetUtil private constructor() {
          */
         fun isNetConnected(context: Context): Boolean {
             val activeInfo = getActiveNetworkInfo(context)
-            return activeInfo != null && activeInfo!!.isConnected()
+            return activeInfo?.isConnected ?: false
         }
 
         /**
@@ -61,7 +60,7 @@ class NetUtil private constructor() {
          */
         fun isMobileConnected(context: Context): Boolean {
             val activeInfo = getActiveNetworkInfo(context)
-            return activeInfo != null && activeInfo!!.isConnected() && activeInfo!!.getType() == ConnectivityManager.TYPE_MOBILE
+            return activeInfo?.run { isConnected && type == ConnectivityManager.TYPE_MOBILE } ?: false
         }
 
         /**
@@ -71,13 +70,18 @@ class NetUtil private constructor() {
          * @return {@code true} 2G网络连接
          */
         fun is2GConnected(context: Context): Boolean {
-            val activeInfo = getActiveNetworkInfo(context)
-            if (activeInfo == null || !activeInfo!!.isConnected()) {
+            if (!isNetConnected(context)) {
                 return false
             }
-            val subtype = activeInfo!!.getSubtype()
+            val activeInfo = getActiveNetworkInfo(context)
+            val subtype = activeInfo?.subtype
             return when (subtype) {
-                TelephonyManager.NETWORK_TYPE_GPRS, TelephonyManager.NETWORK_TYPE_GSM, TelephonyManager.NETWORK_TYPE_EDGE, TelephonyManager.NETWORK_TYPE_CDMA, TelephonyManager.NETWORK_TYPE_1xRTT, TelephonyManager.NETWORK_TYPE_IDEN -> true
+                TelephonyManager.NETWORK_TYPE_GPRS,
+                TelephonyManager.NETWORK_TYPE_GSM,
+                TelephonyManager.NETWORK_TYPE_EDGE,
+                TelephonyManager.NETWORK_TYPE_CDMA,
+                TelephonyManager.NETWORK_TYPE_1xRTT,
+                TelephonyManager.NETWORK_TYPE_IDEN -> true
                 else -> false
             }
         }
@@ -89,13 +93,22 @@ class NetUtil private constructor() {
          * @return {@code true} 3G网络连接
          */
         fun is3GConnected(context: Context): Boolean {
-            val activeInfo = getActiveNetworkInfo(context)
-            if (activeInfo == null || !activeInfo!!.isConnected()) {
+            if (!isNetConnected(context)) {
                 return false
             }
-            val subtype = activeInfo!!.getSubtype()
+            val activeInfo = getActiveNetworkInfo(context)
+            val subtype = activeInfo?.subtype
             return when (subtype) {
-                TelephonyManager.NETWORK_TYPE_UMTS, TelephonyManager.NETWORK_TYPE_EVDO_0, TelephonyManager.NETWORK_TYPE_EVDO_A, TelephonyManager.NETWORK_TYPE_HSDPA, TelephonyManager.NETWORK_TYPE_HSUPA, TelephonyManager.NETWORK_TYPE_HSPA, TelephonyManager.NETWORK_TYPE_EVDO_B, TelephonyManager.NETWORK_TYPE_EHRPD, TelephonyManager.NETWORK_TYPE_HSPAP, TelephonyManager.NETWORK_TYPE_TD_SCDMA -> true
+                TelephonyManager.NETWORK_TYPE_UMTS,
+                TelephonyManager.NETWORK_TYPE_EVDO_0,
+                TelephonyManager.NETWORK_TYPE_EVDO_A,
+                TelephonyManager.NETWORK_TYPE_HSDPA,
+                TelephonyManager.NETWORK_TYPE_HSUPA,
+                TelephonyManager.NETWORK_TYPE_HSPA,
+                TelephonyManager.NETWORK_TYPE_EVDO_B,
+                TelephonyManager.NETWORK_TYPE_EHRPD,
+                TelephonyManager.NETWORK_TYPE_HSPAP,
+                TelephonyManager.NETWORK_TYPE_TD_SCDMA -> true
                 else -> false
             }
         }
@@ -107,13 +120,14 @@ class NetUtil private constructor() {
          * @return {@code true} 4G网络连接
          */
         fun is4GConnected(context: Context): Boolean {
-            val activeInfo = getActiveNetworkInfo(context)
-            if (activeInfo == null || !activeInfo!!.isConnected()) {
+            if (!isNetConnected(context)) {
                 return false
             }
-            val subtype = activeInfo!!.getSubtype()
+            val activeInfo = getActiveNetworkInfo(context)
+            val subtype = activeInfo?.subtype
             return when (subtype) {
-                TelephonyManager.NETWORK_TYPE_LTE, TelephonyManager.NETWORK_TYPE_IWLAN -> true
+                TelephonyManager.NETWORK_TYPE_LTE,
+                TelephonyManager.NETWORK_TYPE_IWLAN -> true
                 else -> false
             }
         }
@@ -161,7 +175,7 @@ class NetUtil private constructor() {
          */
         fun isWifiConnected(context: Context): Boolean {
             val activeInfo = getActiveNetworkInfo(context)
-            return activeInfo != null && activeInfo!!.isConnected() && activeInfo!!.getType() == ConnectivityManager.TYPE_WIFI
+            return activeInfo?.run { isConnected && type == ConnectivityManager.TYPE_WIFI } ?: false
         }
 
         private class NetConnChangedReceiver : BroadcastReceiver() {
@@ -171,13 +185,13 @@ class NetUtil private constructor() {
                 val activeInfo = getActiveNetworkInfo(context)
                 if (activeInfo == null) {
                     broadcastConnStatus(ConnectStatus.NO_NETWORK)
-                } else if (activeInfo!!.isConnected()) {
-                    val networkType = activeInfo!!.getType()
+                } else if (activeInfo!!.isConnected) {
+                    val networkType = activeInfo!!.type
                     if (ConnectivityManager.TYPE_WIFI == networkType) {
                         broadcastConnStatus(ConnectStatus.WIFI)
                     } else if (ConnectivityManager.TYPE_MOBILE == networkType) {
                         broadcastConnStatus(ConnectStatus.MOBILE)
-                        val subtype = activeInfo!!.getSubtype()
+                        val subtype = activeInfo!!.subtype
                         if (TelephonyManager.NETWORK_TYPE_GPRS == subtype
                             || TelephonyManager.NETWORK_TYPE_GSM == subtype
                             || TelephonyManager.NETWORK_TYPE_EDGE == subtype
@@ -261,7 +275,7 @@ class NetUtil private constructor() {
             }
         }
 
-        private fun getActiveNetworkInfo(context: Context): NetworkInfo {
+        private fun getActiveNetworkInfo(context: Context): NetworkInfo? {
             val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             return connMgr.activeNetworkInfo
         }
